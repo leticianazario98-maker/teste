@@ -1,39 +1,100 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 .hero-step {
-  position: relative;
   min-height: 100vh;
   width: 100%;
-
   background-image: url("./IMG_4679.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 
   display: flex;
-  align-items: center;      /* central vertical */
-  justify-content: flex-end; /* joga conteúdo pra direita */
+  align-items: center;
+  justify-content: flex-end;
   padding: 40px;
 }
 
 .hero-content {
   width: 100%;
-  max-width: 420px;
-  color: white;
+  max-width: 460px;
+  color: #fff;
+}
 
-  /* sem fundo escuro */
+.kicker {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+  color: #fff;
 }
 
 .hero-content h1 {
-  font-size: 42px;
-  margin-bottom: 12px;
+  font-size: 56px;
+  line-height: 0.95;
+  margin-bottom: 16px;
+  color: #fff;
 }
 
-.hero-content p {
+.subtitle {
+  font-size: 22px;
+  line-height: 1.4;
   margin-bottom: 20px;
+  color: #fff;
+}
+
+.step {
+  font-size: 15px;
+  margin-bottom: 28px;
+  color: #fff;
+}
+
+.hero-content h2 {
+  font-size: 38px;
+  line-height: 1.1;
+  margin-bottom: 24px;
+  color: #fff;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #fff;
 }
 
 .form-group input {
   width: 100%;
-  padding: 14px;
+  height: 52px;
+  padding: 0 16px;
   border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  font-size: 16px;
+  outline: none;
+}
+
+.form-group input::placeholder {
+  color: rgba(255,255,255,0.85);
+}
+
+button {
+  width: 100%;
+  height: 54px;
   border: none;
+  border-radius: 999px;
+  background: #fff;
+  color: #111;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
 }
