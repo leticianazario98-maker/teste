@@ -10,14 +10,32 @@ const questions = [
     ]
   },
   {
-    title: "Qual desses looks parece mais com ela?",
-    image: "", // ex: "./img/pergunta2.jpg"
-    options: [
-      { letter: "A", text: "Blusa básica + calça elegante" },
-      { letter: "B", text: "Vestido que valoriza o corpo" },
-      { letter: "C", text: "Conjunto moderno / com mistura de peças" },
-      { letter: "D", text: "Look de impacto, mais fashion" }
-    ]
+{
+  title: "Qual desses looks parece mais com ela?",
+  image: "",
+  options: [
+    {
+      letter: "A",
+      text: "Blusa básica + calça elegante",
+      img: "./img/look-a.jpg"
+    },
+    {
+      letter: "B",
+      text: "Vestido que valoriza o corpo",
+      img: "./img/look-b.jpg"
+    },
+    {
+      letter: "C",
+      text: "Conjunto moderno / com mistura de peças",
+      img: "./img/look-c.jpg"
+    },
+    {
+      letter: "D",
+      text: "Look de impacto, mais fashion",
+      img: "./img/look-d.jpg"
+    }
+  ]
+}
   },
   {
     title: "Sua mãe prefere roupas que:",
