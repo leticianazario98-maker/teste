@@ -8,7 +8,6 @@ const QUIZ_CONFIG = {
     {
       id: "contato",
       kicker: "1 • Vamos começar",
-      title: "Queremos te conhecer melhor",
       fields: [
         {
           name: "nome",
