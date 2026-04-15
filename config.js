@@ -1,16 +1,14 @@
 const QUIZ_CONFIG = {
-  title: "Descubra sua seleção ideal",
-  description: "Responda algumas perguntas e receba uma curadoria especial.",
+  title: "THE REAL MOM STYLE",
+  description: "Queremos ajudar você a acertar 100% nesse Dia das Mães.",
   submitUrl: "COLE_AQUI_A_URL_DO_SEU_APPS_SCRIPT",
-  redirectMap: {
-    elegante: "/resultado-elegante.html",
-    casual: "/resultado-casual.html",
-    moderno: "/resultado-moderno.html"
-  },
+  successMessage: "Recebemos suas respostas com sucesso.",
+  redirectUrl: "",
   steps: [
     {
       id: "contato",
-      title: "Antes de começar",
+      kicker: "1 • Vamos começar",
+      title: "Queremos te conhecer melhor",
       fields: [
         {
           name: "nome",
@@ -30,35 +28,39 @@ const QUIZ_CONFIG = {
     },
     {
       id: "perfil",
-      title: "Conte um pouco sobre você",
+      kicker: "2 • Seu estilo",
+      title: "Qual estilo mais combina com você?",
       fields: [
         {
           name: "estilo",
-          label: "Qual estilo combina mais com você?",
+          label: "Escolha uma opção",
           type: "radio",
           required: true,
           options: [
-            { label: "Casual", value: "casual" },
-            { label: "Elegante", value: "elegante" },
-            { label: "Moderno", value: "moderno" }
+            { label: "Clássico", value: "classico" },
+            { label: "Moderno", value: "moderno" },
+            { label: "Casual chic", value: "casual_chic" },
+            { label: "Elegante", value: "elegante" }
           ]
         }
       ]
     },
     {
-      id: "momento",
-      title: "Para qual ocasião você busca algo?",
+      id: "ocasiao",
+      kicker: "3 • Momento",
+      title: "Para qual ocasião você procura algo?",
       fields: [
         {
           name: "ocasiao",
-          label: "Ocasião principal",
+          label: "Selecione",
           type: "select",
           required: true,
           options: [
             { label: "Selecione", value: "" },
-            { label: "Trabalho", value: "trabalho" },
-            { label: "Dia a dia", value: "dia-a-dia" },
-            { label: "Evento", value: "evento" }
+            { label: "Presente", value: "presente" },
+            { label: "Uso no trabalho", value: "trabalho" },
+            { label: "Evento especial", value: "evento" },
+            { label: "Dia a dia", value: "dia_a_dia" }
           ]
         },
         {
@@ -68,10 +70,25 @@ const QUIZ_CONFIG = {
           required: true,
           options: [
             { label: "Selecione", value: "" },
-            { label: "Até R$199", value: "ate-199" },
-            { label: "R$200 a R$399", value: "200-399" },
-            { label: "Acima de R$400", value: "400+" }
+            { label: "Até R$199", value: "ate_199" },
+            { label: "R$200 a R$399", value: "200_399" },
+            { label: "R$400 a R$699", value: "400_699" },
+            { label: "Acima de R$700", value: "700_mais" }
           ]
+        }
+      ]
+    },
+    {
+      id: "foto",
+      kicker: "4 • Referência",
+      title: "Envie uma foto de referência",
+      fields: [
+        {
+          name: "foto",
+          label: "Suba uma imagem",
+          type: "file",
+          accept: "image/*",
+          required: false
         }
       ]
     }
