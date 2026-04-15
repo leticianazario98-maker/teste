@@ -1,209 +1,264 @@
-const form = document.getElementById("quiz-form");
-const stepContainer = document.getElementById("step-container");
-const prevBtn = document.getElementById("prev-btn");
-const nextBtn = document.getElementById("next-btn");
-const submitBtn = document.getElementById("submit-btn");
-const statusMessage = document.getElementById("status-message");
-const progressFill = document.getElementById("progress-fill");
-const progressText = document.getElementById("progress-text");
+const questions = [
+  {
+    title: "Quando sua mãe sai de casa, ela normalmente:",
+    image: "", // coloque aqui o caminho da imagem se quiser, ex: "./img/pergunta1.jpg"
+    options: [
+      { letter: "A", text: "Escolhe algo confortável e prático" },
+      { letter: "B", text: "Se arruma bem, gosta de estar impecável" },
+      { letter: "C", text: "Usa algo diferente, com personalidade" },
+      { letter: "D", text: "Monta um look que chama atenção" }
+    ]
+  },
+  {
+    title: "Qual desses looks parece mais com ela?",
+    image: "", // ex: "./img/pergunta2.jpg"
+    options: [
+      { letter: "A", text: "Blusa básica + calça elegante" },
+      { letter: "B", text: "Vestido que valoriza o corpo" },
+      { letter: "C", text: "Conjunto moderno / com mistura de peças" },
+      { letter: "D", text: "Look de impacto, mais fashion" }
+    ]
+  },
+  {
+    title: "Sua mãe prefere roupas que:",
+    image: "",
+    options: [
+      { letter: "A", text: "Funcionam em qualquer ocasião" },
+      { letter: "B", text: "Deixam ela mais bonita e arrumada" },
+      { letter: "C", text: "Mostram quem ela é" },
+      { letter: "D", text: "Seguem tendências e são estilosas" }
+    ]
+  },
+  {
+    title: "Quando ela vai se arrumar, ela:",
+    image: "",
+    options: [
+      { letter: "A", text: "Resolve rápido e pronto" },
+      { letter: "B", text: "Se dedica, gosta do processo" },
+      { letter: "C", text: "Escolhe algo que combine com o humor dela" },
+      { letter: "D", text: "Testa combinações até ficar perfeito" }
+    ]
+  },
+  {
+    title: "Sua mãe gosta mais de:",
+    image: "",
+    options: [
+      { letter: "A", text: "Conforto" },
+      { letter: "B", text: "Elegância" },
+      { letter: "C", text: "Autenticidade" },
+      { letter: "D", text: "Estilo / moda" }
+    ]
+  },
+  {
+    title: "Se sua mãe fosse um look, ela seria:",
+    image: "",
+    options: [
+      { letter: "A", text: "Discreto e versátil" },
+      { letter: "B", text: "Clássico e feminino" },
+      { letter: "C", text: "Criativo e diferente" },
+      { letter: "D", text: "Marcante e moderno" }
+    ]
+  },
+  {
+    title: "Quando ela vai comprar roupa, ela:",
+    image: "",
+    options: [
+      { letter: "A", text: "Vai direto ao que precisa" },
+      { letter: "B", text: "Escolhe peças mais elegantes" },
+      { letter: "C", text: "Procura algo diferente" },
+      { letter: "D", text: "Ama ver novidades" }
+    ]
+  }
+];
 
-document.getElementById("quiz-title").textContent = QUIZ_CONFIG.title;
-document.getElementById("quiz-description").textContent = QUIZ_CONFIG.description;
+const resultsMap = {
+  A: {
+    title: "Basic Mom",
+    description:
+      "Prática, elegante e sem esforço. Prefere peças versáteis que acompanham a rotina com conforto e sofisticação.",
+    link: "https://seulink.com/basic-mom"
+  },
+  B: {
+    title: "Glam Mom",
+    description:
+      "Feminina, vaidosa e sempre impecável. Ama se sentir bonita e valoriza looks que destacam sua presença.",
+    link: "https://seulink.com/glam-mom"
+  },
+  C: {
+    title: "Authentic Mom",
+    description:
+      "Autêntica e cheia de personalidade. Escolhe peças que refletem quem ela é, sem seguir padrões.",
+    link: "https://seulink.com/authentic-mom"
+  },
+  D: {
+    title: "Fashion Mom",
+    description:
+      "Estilosa e sempre à frente. Gosta de tendência, impacto e looks que chamam atenção.",
+    link: "https://seulink.com/fashion-mom"
+  }
+};
 
-let currentStepIndex = 0;
-const answers = {};
+const screens = {
+  cover: document.getElementById("step-cover"),
+  question: document.getElementById("step-question"),
+  result: document.getElementById("step-result")
+};
 
-function renderStep() {
-  const step = QUIZ_CONFIG.steps[currentStepIndex];
-  stepContainer.innerHTML = "";
+const nomeInput = document.getElementById("nome");
+const telefoneInput = document.getElementById("telefone");
+const startQuizBtn = document.getElementById("startQuiz");
+const questionTitle = document.getElementById("questionTitle");
+const optionsContainer = document.getElementById("optionsContainer");
+const nextBtn = document.getElementById("nextBtn");
+const prevBtn = document.getElementById("prevBtn");
+const questionStepText = document.getElementById("questionStepText");
+const questionImageWrap = document.getElementById("questionImageWrap");
+const questionImage = document.getElementById("questionImage");
 
-  const title = document.createElement("h2");
-  title.className = "step-title";
-  title.textContent = step.title;
-  stepContainer.appendChild(title);
+const resultTitle = document.getElementById("resultTitle");
+const resultDescription = document.getElementById("resultDescription");
+const resultPersonName = document.getElementById("resultPersonName");
+const resultLink = document.getElementById("resultLink");
+const restartBtn = document.getElementById("restartBtn");
 
-  step.fields.forEach(field => {
-    const fieldWrap = document.createElement("div");
-    fieldWrap.className = "field";
+let currentQuestionIndex = 0;
+let answers = [];
+let leadData = {
+  nome: "",
+  telefone: ""
+};
 
-    const label = document.createElement("label");
-    label.textContent = field.label;
-    fieldWrap.appendChild(label);
+function showScreen(screenKey) {
+  Object.values(screens).forEach((screen) => screen.classList.remove("active"));
+  screens[screenKey].classList.add("active");
+}
 
-    if (field.type === "text" || field.type === "tel" || field.type === "email") {
-      const input = document.createElement("input");
-      input.type = field.type;
-      input.name = field.name;
-      input.placeholder = field.placeholder || "";
-      input.value = answers[field.name] || "";
-      fieldWrap.appendChild(input);
+function formatPhone(value) {
+  const numbers = value.replace(/\D/g, "").slice(0, 11);
+
+  if (numbers.length <= 2) return numbers;
+  if (numbers.length <= 7) return `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`;
+  return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7, 11)}`;
+}
+
+telefoneInput.addEventListener("input", (e) => {
+  e.target.value = formatPhone(e.target.value);
+});
+
+function renderQuestion() {
+  const question = questions[currentQuestionIndex];
+  questionTitle.textContent = question.title;
+  questionStepText.textContent = `Etapa ${currentQuestionIndex + 2} de 8`;
+
+  optionsContainer.innerHTML = "";
+
+  if (question.image) {
+    questionImage.src = question.image;
+    questionImageWrap.classList.add("show");
+  } else {
+    questionImage.src = "";
+    questionImageWrap.classList.remove("show");
+  }
+
+  question.options.forEach((option) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "option-card";
+    button.innerHTML = `<span class="option-letter">${option.letter})</span> ${option.text}`;
+
+    if (answers[currentQuestionIndex] === option.letter) {
+      button.classList.add("selected");
     }
 
-    if (field.type === "select") {
-      const select = document.createElement("select");
-      select.name = field.name;
+    button.addEventListener("click", () => {
+      answers[currentQuestionIndex] = option.letter;
+      renderQuestion();
+    });
 
-      field.options.forEach(option => {
-        const opt = document.createElement("option");
-        opt.value = option.value;
-        opt.textContent = option.label;
-        if ((answers[field.name] || "") === option.value) opt.selected = true;
-        select.appendChild(opt);
-      });
-
-      fieldWrap.appendChild(select);
-    }
-
-    if (field.type === "radio") {
-      const grid = document.createElement("div");
-      grid.className = "options-grid two-columns";
-
-      field.options.forEach(option => {
-        const card = document.createElement("label");
-        card.className = "option-card";
-
-        const input = document.createElement("input");
-        input.type = "radio";
-        input.name = field.name;
-        input.value = option.value;
-
-        if (answers[field.name] === option.value) {
-          input.checked = true;
-          card.classList.add("selected");
-        }
-
-        input.addEventListener("change", () => {
-          document.querySelectorAll(`input[name="${field.name}"]`).forEach(el => {
-            el.parentElement.classList.remove("selected");
-          });
-          if (input.checked) {
-            card.classList.add("selected");
-          }
-        });
-
-        const span = document.createElement("span");
-        span.textContent = option.label;
-
-        card.appendChild(input);
-        card.appendChild(span);
-        grid.appendChild(card);
-      });
-
-      fieldWrap.appendChild(grid);
-    }
-
-    const error = document.createElement("div");
-    error.className = "error";
-    error.dataset.errorFor = field.name;
-    fieldWrap.appendChild(error);
-
-    stepContainer.appendChild(fieldWrap);
+    optionsContainer.appendChild(button);
   });
 
-  updateButtons();
-  updateProgress();
+  prevBtn.style.display = currentQuestionIndex === 0 ? "none" : "inline-flex";
 }
 
-function updateButtons() {
-  prevBtn.style.display = currentStepIndex === 0 ? "none" : "inline-block";
-  nextBtn.style.display = currentStepIndex === QUIZ_CONFIG.steps.length - 1 ? "none" : "inline-block";
-  submitBtn.style.display = currentStepIndex === QUIZ_CONFIG.steps.length - 1 ? "inline-block" : "none";
-}
+function getResultLetter() {
+  const count = { A: 0, B: 0, C: 0, D: 0 };
 
-function updateProgress() {
-  const total = QUIZ_CONFIG.steps.length;
-  const current = currentStepIndex + 1;
-  const percent = (current / total) * 100;
-
-  progressFill.style.width = `${percent}%`;
-  progressText.textContent = `Etapa ${current} de ${total}`;
-}
-
-function collectCurrentStepValues() {
-  const step = QUIZ_CONFIG.steps[currentStepIndex];
-  let valid = true;
-
-  step.fields.forEach(field => {
-    let value = "";
-
-    const errorEl = document.querySelector(`[data-error-for="${field.name}"]`);
-    errorEl.textContent = "";
-
-    if (field.type === "text" || field.type === "tel" || field.type === "email" || field.type === "select") {
-      const input = form.querySelector(`[name="${field.name}"]`);
-      value = input ? input.value.trim() : "";
-    }
-
-    if (field.type === "radio") {
-      const checked = form.querySelector(`[name="${field.name}"]:checked`);
-      value = checked ? checked.value : "";
-    }
-
-    if (field.required && !value) {
-      errorEl.textContent = "Esse campo é obrigatório.";
-      valid = false;
-    }
-
-    answers[field.name] = value;
+  answers.forEach((answer) => {
+    count[answer] += 1;
   });
 
-  return valid;
+  let winner = "A";
+  let max = count.A;
+
+  ["B", "C", "D"].forEach((letter) => {
+    if (count[letter] > max) {
+      max = count[letter];
+      winner = letter;
+    }
+  });
+
+  return winner;
 }
 
-prevBtn.addEventListener("click", () => {
-  currentStepIndex--;
-  renderStep();
+function showResult() {
+  const resultLetter = getResultLetter();
+  const result = resultsMap[resultLetter];
+
+  resultTitle.textContent = result.title;
+  resultDescription.textContent = result.description;
+  resultPersonName.textContent = `${leadData.nome ? leadData.nome + "," : "Você"} esse é o estilo que mais combina com a sua mãe.`;
+  resultLink.href = result.link;
+
+  showScreen("result");
+}
+
+startQuizBtn.addEventListener("click", () => {
+  const nome = nomeInput.value.trim();
+  const telefone = telefoneInput.value.trim();
+
+  if (!nome) {
+    alert("Preencha seu nome.");
+    return;
+  }
+
+  if (telefone.replace(/\D/g, "").length < 10) {
+    alert("Preencha um telefone válido.");
+    return;
+  }
+
+  leadData.nome = nome;
+  leadData.telefone = telefone;
+  currentQuestionIndex = 0;
+  answers = [];
+
+  renderQuestion();
+  showScreen("question");
 });
 
 nextBtn.addEventListener("click", () => {
-  const valid = collectCurrentStepValues();
-  if (!valid) return;
+  if (!answers[currentQuestionIndex]) {
+    alert("Escolha uma opção para continuar.");
+    return;
+  }
 
-  currentStepIndex++;
-  renderStep();
-});
-
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const valid = collectCurrentStepValues();
-  if (!valid) return;
-
-  statusMessage.textContent = "Enviando...";
-
-  const payload = {
-    data_envio: new Date().toISOString(),
-    ...answers
-  };
-
-  try {
-    const response = await fetch(QUIZ_CONFIG.submitUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "text/plain;charset=utf-8"
-      },
-      body: JSON.stringify(payload)
-    });
-
-    const result = await response.json();
-
-    if (!result.ok) {
-      statusMessage.textContent = "Não foi possível enviar agora.";
-      return;
-    }
-
-    statusMessage.textContent = "Enviado com sucesso.";
-
-    const estilo = answers.estilo;
-    const redirect = QUIZ_CONFIG.redirectMap?.[estilo];
-
-    if (redirect) {
-      window.location.href = redirect;
-    }
-  } catch (error) {
-    console.error(error);
-    statusMessage.textContent = "Erro de conexão.";
+  if (currentQuestionIndex < questions.length - 1) {
+    currentQuestionIndex += 1;
+    renderQuestion();
+  } else {
+    showResult();
   }
 });
 
-renderStep();
+prevBtn.addEventListener("click", () => {
+  if (currentQuestionIndex > 0) {
+    currentQuestionIndex -= 1;
+    renderQuestion();
+  }
+});
+
+restartBtn.addEventListener("click", () => {
+  currentQuestionIndex = 0;
+  answers = [];
+  showScreen("cover");
+});
