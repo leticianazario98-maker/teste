@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz Responsivo</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <section class="quiz-card">
+      <div class="quiz-header">
+        <p class="eyebrow">Quiz</p>
+        <h1 id="quiz-title"></h1>
+        <p id="quiz-description"></p>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="progress-bar">
+          <div id="progress-fill"></div>
+        </div>
+        <span id="progress-text"></span>
+      </div>
+
+      <form id="quiz-form">
+        <div id="step-container"></div>
+
+        <div class="actions">
+          <button type="button" id="prev-btn" class="btn btn-secondary">Voltar</button>
+          <button type="button" id="next-btn" class="btn btn-primary">Continuar</button>
+          <button type="submit" id="submit-btn" class="btn btn-primary">Enviar</button>
+        </div>
+
+        <p id="status-message" class="status-message"></p>
+      </form>
+    </section>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
